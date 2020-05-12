@@ -5,7 +5,7 @@ Created on Wed Jul 17 12:34:44 2019
 
 @author: Subasish
 """
-
+#importing the libraries
 import nltk
 import numpy as np
 import tflearn as tl
@@ -16,10 +16,12 @@ import pickle
 from nltk.stem.lancaster import LancasterStemmer
 stemmer= LancasterStemmer()
 
+#loading the json(dataset) file
 with open("intent.json") as file:
     data= json.load(file)
 #print(data["intents"])
 
+#load the model if already trained using try else train the model using except
 try:
     
     with open("data.pickle","rb") as f:
@@ -80,6 +82,7 @@ except:
     with open("data.pickle","wb") as f:
         pickle.dump((words,labels,training,output),f)
 
+#training the model
 tf.reset_default_graph()
 net= tl.input_data(shape=[None,len(training[0])])
 net= tl.fully_connected(net,20)
@@ -98,6 +101,7 @@ except:
     model2.fit(training,output,n_epoch=10000,batch_size= 10, show_metric= True)
     model2.save("model2.tf")
 
+#creating bag of words
 def bag_of_words(s,words):
     bag=[0 for i in range(len(words))]
     s_words=nltk.word_tokenize(s)
@@ -110,6 +114,7 @@ def bag_of_words(s,words):
                 
     return np.array(bag)
 
+# main function for chatting with the bot.
 def chat():
     print("\nHey there!You can start talking now !!! or   (type quit to stop.)")
     while True:
